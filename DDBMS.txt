@@ -1,0 +1,84 @@
+1.
+SELECT city FROM cassandra.customersandsuppliersbycity WHERE relationship='Customers' ALLOW FILTERING;
+
+2.
+SELECT companyname FROM cassandra.customersandsuppliersbycity WHERE relationship='Suppliers' ALLOW FILTERING;
+
+3.
+SELECT CategoryName FROM cassandra.SalesByCategory WHERE ProductSales >2226  ALLOW FILTERING;
+
+4.
+SELECT companyname FROM cassandra.customersandsuppliersbycity WHERE city='Barcelona' ALLOW FILTERING;
+
+5.
+select categoryid, productname, quantityperunit,unitsinstock, discontinued  from cassandra.productsupplier WHERE discontinued = 0 ALLOW FILTERING;
+
+6.
+select supplierid, companyname, productid, productname from cassandra.productsupplier;
+
+7.
+SELECT * FROM cassandra.invoices WHERE shipname = 'Folies gourmandes' AND country = 'France' ALLOW FILTERING;
+
+8.
+SELECT * FROM cassandra.invoices WHERE ORDERID = 10408 ALLOW FILTERING;
+
+9.
+SELECT * FROM cassandra.invoices WHERE shipname = 'Tortuga Restaurante' ALLOW FILTERING;
+
+10.
+SELECT CategoryName, ProductSales FROM cassandra.SalesByCategory WHERE CategoryName='Seafood' ALLOW FILTERING;
+
+11.
+select supplierid, companyname, productid, productname from cassandra.productsupplier;
+
+12.
+select categoryid, productname, quantityperunit,unitsinstock, discontinued  from cassandra.productsupplier WHERE discontinued = 0 ALLOW FILTERING;
+
+13.
+select productname, unitprice from cassandra.productsupplier WHERE unitprice > 90 ALLOW FILTERING;
+
+
+
+
+
+command-1:
+cqlsh-expansion cassandra.us-east-2.amazonaws.com 9142 --ssl
+
+command-2:
+aws keyspaces create-keyspace --keyspace-name 'cassandra'
+
+command-3:
+aws keyspaces create-table --keyspace-name 'cassandra' --table-name 'productsupplier' --schema-definition 'file://aws/keyspaces/cassandra/productsupplier/schema_definition.json'
+
+command-4:
+aws keyspaces create-table --keyspace-name 'cassandra' --table-name 'invoices' --schema-definition 'file://aws/keyspaces/cassandra/invoices/schema_definition.json'
+
+command-5:
+aws keyspaces create-table --keyspace-name 'cassandra' --table-name 'customersandsuppliersbycity' --schema-definition 'file://aws/keyspaces/cassandra/customersandsuppliersbycity/schema_definition.json'
+
+command-6:
+aws keyspaces create-table --keyspace-name 'cassandra' --table-name 'salesbycategory' --schema-definition 'file://aws/keyspaces/cassandra/salesbycategory/schema_definition.json'
+
+command-7:
+aws iam create-service-specific-credential \
+    --user-name "UserName" \
+    --service-name cassandra.amazonaws.com
+
+command-8:
+CONSISTENCY LOCAL_QUORUM
+
+command-9:
+11.
+COPY cassandra.productsupplier (supplierid,productid,categoryid,companyname,productname,categoryname,quantityperunit,unitsinstock,unitprice,discontinued) FROM 'data/csv/productsupplier.csv' WITH DELIMITER='|' AND HEADER=TRUE;
+
+12.
+COPY cassandra.invoices (shipname,shipaddress,shipcity,shipregion,shippostalcode,shipcountry,customerid,customername,address,city,region,postalcode,country,salesperson,orderid,orderdate,requireddate,shippeddate,shippername,productid,productname,unitprice,quantity,discount,extendedprice,freight) FROM 'data/csv/invoices.csv' WITH DELIMITER='|' AND HEADER=TRUE;
+
+13.
+COPY cassandra.customersandsuppliersbycity (city,companyname,contactname,relationship) FROM 'data/csv/customersandsuppliersbycity.csv' WITH DELIMITER='|' AND HEADER=TRUE;
+
+14.
+COPY cassandra.salesbycategory (categoryid,categoryname,productname,productsales) FROM 'data/csv/salesbycategory.csv' WITH DELIMITER='|' AND HEADER=TRUE;
+
+
+
